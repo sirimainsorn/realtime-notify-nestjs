@@ -23,56 +23,48 @@ export class NotificationGateway {
     @MessageBody() message: CreateNotificationDto,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log(client);
-    console.log(message);
-    this.server.emit('chat-message', { user: client.id, message: message });
+    // console.log('user : ', client);
+    console.log('user : ', client.id);
+    console.log('name : ', message.name);
+    console.log('status : ', message.status);
+    console.log('============================');
+
+    this.server.emit('chat-message', { messageId: message });
   }
 
-  // @WebSocketServer() server: Server;
-  // private readonly logger = new Logger('NotificationGateway');
+  @SubscribeMessage('notification')
+  handleNotification(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    this.server.emit('notification', data);
+  }
 
-  // @SubscribeMessage('sendNotification')
-  // async handleSendNotification(
-  //   userId: string,
-  //   message: string,
-  //   status: 'approved' | 'rejected',
-  // ) {
-  //   try {
-  //     this.server.to(userId).emit('notification', { message, status });
-  //   } catch (error) {
-  //     this.logger.error(
-  //       `Failed to fetch messages by User ID ${userId}: ${error.message}`,
-  //       error.stack,
-  //     );
-  //     throw new WsException('Error occurred while fetching messages.');
-  //   }
+  // @SubscribeMessage('createNotification')
+  // create(@MessageBody() createNotificationDto: CreateNotificationDto) {
+  //   return this.notificationService.create(createNotificationDto);
   // }
 
-  @SubscribeMessage('createNotification')
-  create(@MessageBody() createNotificationDto: CreateNotificationDto) {
-    return this.notificationService.create(createNotificationDto);
-  }
+  // @SubscribeMessage('findAllNotification')
+  // findAll() {
+  //   return this.notificationService.findAll();
+  // }
 
-  @SubscribeMessage('findAllNotification')
-  findAll() {
-    return this.notificationService.findAll();
-  }
+  // @SubscribeMessage('findOneNotification')
+  // findOne(@MessageBody() id: number) {
+  //   return this.notificationService.findOne(id);
+  // }
 
-  @SubscribeMessage('findOneNotification')
-  findOne(@MessageBody() id: number) {
-    return this.notificationService.findOne(id);
-  }
+  // @SubscribeMessage('updateNotification')
+  // update(@MessageBody() updateNotificationDto: UpdateNotificationDto) {
+  //   return this.notificationService.update(
+  //     updateNotificationDto.id,
+  //     updateNotificationDto,
+  //   );
+  // }
 
-  @SubscribeMessage('updateNotification')
-  update(@MessageBody() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationService.update(
-      updateNotificationDto.id,
-      updateNotificationDto,
-    );
-  }
-
-  @SubscribeMessage('removeNotification')
-  remove(@MessageBody() id: number) {
-    return this.notificationService.remove(id);
-  }
+  // @SubscribeMessage('removeNotification')
+  // remove(@MessageBody() id: number) {
+  //   return this.notificationService.remove(id);
+  // }
 }
